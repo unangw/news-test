@@ -107,7 +107,7 @@ class ListArticleViewController: BaseViewController {
     
     private func setupSearchTextField() {
         // MARK: - Setup Search TextField
-        searchTextField.placeholder = "Search news here..."
+        searchTextField.placeholder = "Search article here..."
         
         searchTextField.setSuffix(.icClose, target: self, action: #selector(clearSearch))
         searchTextField.textField.rightViewMode = .never // Hide suffix icon
@@ -117,7 +117,7 @@ class ListArticleViewController: BaseViewController {
     
     private func setupNoData() {
         let noDataView = NoDataView()
-        noDataView.descriptionMessage = "News is empty!"
+        noDataView.descriptionMessage = "Article is empty!"
         
         collectionView.backgroundView = noDataView
         
@@ -173,16 +173,16 @@ class ListArticleViewController: BaseViewController {
     }
     
     private func setupSearchBinding() {
-        let searchText = searchTextField.textField.rx.text.orEmpty
+        let searchText = searchTextField.textField.rx.controlEvent(.editingChanged)
+            .withLatestFrom(searchTextField.textField.rx.text.orEmpty)
             .share(replay: 1)
-
+        
         searchText
             .map { $0.isEmpty ? UITextField.ViewMode.never : .always }
             .bind(to: searchTextField.textField.rx.rightViewMode)
             .disposed(by: disposeBag)
 
         searchText
-            .skip(1)
             .debounce(.milliseconds(1000), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] _ in
