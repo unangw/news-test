@@ -23,9 +23,8 @@ class ListArticleViewController: BaseViewController {
     var customFlowLayout = CHTCollectionViewWaterfallLayout()
     let refreshControl = UIRefreshControl()
     var page = 1
-    var searchTimer: Timer?
     var isLoadingNextPage: Bool = false
-    var newsIsLoading = true
+    var articlesIsLoading = true
     private lazy var sizingCell: ArticleItemCell = {
         guard let cell = Bundle.main.loadNibNamed(ArticleItemCell.identifier, owner: nil)?.first as? ArticleItemCell else {
             fatalError("Failed to load ArticleItemCell.xib")
@@ -135,7 +134,7 @@ class ListArticleViewController: BaseViewController {
     private func reloadCollectionView() {
         collectionView.reloadData()
         
-        if !newsIsLoading && (viewModel?.articles.isEmpty ?? true) {
+        if !articlesIsLoading && (viewModel?.articles.isEmpty ?? true) {
             setupNoData()
         } else {
             collectionView.backgroundView = nil
@@ -162,7 +161,7 @@ class ListArticleViewController: BaseViewController {
         var request = ArticleRequestModel(
             q: searchTextField.textField.text,
             sources: nil,
-            pageSize: 10,
+            pageSize: viewModel?.articlePageSize ?? 10,
             page: page
         )
         
@@ -183,6 +182,7 @@ class ListArticleViewController: BaseViewController {
             .disposed(by: disposeBag)
 
         searchText
+            .skip(1)
             .debounce(.milliseconds(1000), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] _ in
@@ -218,14 +218,14 @@ extension ListArticleViewController {
 extension ListArticleViewController: UICollectionViewDataSource, UICollectionViewDelegate, CHTCollectionViewDelegateWaterfallLayout {
     // Part of UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return newsIsLoading ? 10 : viewModel?.articles.count ?? 0
+        return articlesIsLoading ? 10 : viewModel?.articles.count ?? 0
     }
     
     // Part of UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var cell = UICollectionViewCell()
         
-        if newsIsLoading {
+        if articlesIsLoading {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: ArticleShimmerCell.identifier, for: indexPath)
             
             DispatchQueue.main.async {
@@ -252,7 +252,7 @@ extension ListArticleViewController: UICollectionViewDataSource, UICollectionVie
         let dataCount = viewModel?.articles.count ?? 0
         let countDataForDisplay = dataCount - indexPath.item
         
-        if !(viewModel?.isMaxPage ?? false) && !newsIsLoading && !isLoadingNextPage && countDataForDisplay <= 1 {
+        if !(viewModel?.isMaxPage ?? false) && !articlesIsLoading && !isLoadingNextPage && countDataForDisplay <= 1 {
             
             getArticles(page: page+1)
         }
@@ -263,7 +263,7 @@ extension ListArticleViewController: UICollectionViewDataSource, UICollectionVie
         let contentWidth = (collectionView.bounds.width - (20 * 2 + 16)) / 2
         var contentHeight: CGFloat = 148
         
-        if !newsIsLoading {
+        if !articlesIsLoading {
             sizingCell.frame.size.width = contentWidth
             
             let item = viewModel?.articles[indexPath.item]
@@ -305,21 +305,27 @@ extension ListArticleViewController {
                 case .loading:
                     self.refreshControl.endRefreshing()
                     
-                    if self.page == 1 { self.newsIsLoading = true }
-                    
-                    self.isLoadingNextPage = true
+                    if self.page == 1 {
+                        self.articlesIsLoading = true
+                    } else {
+                        self.isLoadingNextPage = true
+                    }
                     
                     self.reloadCollectionView()
                 case .loaded:
-                    if self.page == 1 { self.newsIsLoading = false }
-                    
-                    self.isLoadingNextPage = false
+                    if self.page == 1 {
+                        self.articlesIsLoading = false
+                    } else {
+                        self.isLoadingNextPage = false
+                    }
                     
                     self.reloadCollectionView()
                 case .error(let failure):
-                    if self.page == 1 { self.newsIsLoading = false }
-                    
-                    self.isLoadingNextPage = false
+                    if self.page == 1 {
+                        self.articlesIsLoading = false
+                    } else {
+                        self.isLoadingNextPage = false
+                    }
                     
                     self.reloadCollectionView()
                     

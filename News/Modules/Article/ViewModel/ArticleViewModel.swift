@@ -14,6 +14,7 @@ protocol ArticleViewModelProtocol {
     
     // MARK: - Variables
     var articles: [ArticleItemModel] { get set }
+    var articlePageSize: Int { get set }
     var isMaxPage: Bool { get set }
     
     // MARK: - Functions
@@ -30,6 +31,7 @@ class ArticleViewModel: ArticleViewModelProtocol {
     }
     
     var articles: [ArticleItemModel] = []
+    var articlePageSize: Int = 10
     var isMaxPage: Bool = false
     
     init(service: ArticleServiceProtocol) {
@@ -52,7 +54,7 @@ class ArticleViewModel: ArticleViewModelProtocol {
                 
                 articles.append(contentsOf: response.articles ?? [])
                 
-                if (response.articles?.isEmpty ?? true) {
+                if (response.totalResults ?? 0 < 10 || response.articles?.isEmpty ?? true) {
                     isMaxPage = true
                 }
                 
