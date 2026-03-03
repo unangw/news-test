@@ -10,6 +10,7 @@ import UIKit
 class CategoryItemCell: UICollectionViewCell {
     // MARK: - Outlets
     @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var categoryImage: UIImageView!
     
     // MARK: - Variables
@@ -21,14 +22,11 @@ class CategoryItemCell: UICollectionViewCell {
         contentView.borderColor = UIColor.black
     }
     
-    func configure(category: String, icon: UIImage, color: String) {
-        contentView.borderColor = UIColor(hex: color)
-        
+    func configure(category: String, icon: UIImage, description: String) {
         categoryLabel.text = category.capitalized
-        categoryLabel.textColor = UIColor(hex: color)
+        descriptionLabel.text = description
         
-        categoryImage.image = icon.withRenderingMode(.alwaysTemplate)
-        categoryImage.tintColor = UIColor(hex: color)
+        categoryImage.image = icon
     }
     
     /// Don't remove this function if use CustomFlowLayout

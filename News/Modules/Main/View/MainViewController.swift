@@ -88,7 +88,7 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
         
         // Configure cell
-        cell.configure(category: Category.list[indexPath.item], icon: Category.images[indexPath.item], color: Category.colors[indexPath.item])
+        cell.configure(category: Category.list[indexPath.item], icon: Category.images[indexPath.item], description: Category.descriptions[indexPath.item])
         
         return cell
     }

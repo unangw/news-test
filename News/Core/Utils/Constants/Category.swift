@@ -28,13 +28,13 @@ class Category {
         .imgTechnology
     ]
     
-    static var colors: [String] = [
-        "#666666",
-        "#4A90E2",
-        "#D64541",
-        "#4EC3B5",
-        "#F5A623",
-        "#9B59B6",
-        "#6D9E3F"
+    static var descriptions: [String] = [
+        "Daily global news and top headlines",
+        "Market updates and economic insights",
+        "Latest movie, music, and celebrity news",
+        "Wellness tips and medical discoveries",
+        "Scientific research and innovations",
+        "Live scores and major athletic events",
+        "New gadgets and software innovations",
     ]
 }
