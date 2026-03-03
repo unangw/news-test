@@ -64,7 +64,7 @@ class SourceViewController: BaseViewController {
     
     private func setupNavigation() {
         let backGesture = UITapGestureRecognizer(target: self, action: #selector(closeSourceScreen))
-        setupNavigationBar(title: "Source List", backAction: backGesture)
+        setupNavigationBar(title: "Sources", backAction: backGesture)
     }
     
     private func setupCollectionView() {
