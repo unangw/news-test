@@ -30,4 +30,11 @@ class ArticleItemCell: UICollectionViewCell {
         
         publishedAtLabel.text = article.publishedAt?.toDisplayedDate() ?? "-"
     }
+    
+    /// Don't remove this function if use CustomFlowLayout
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let targetSize = CGSize(width: layoutAttributes.frame.width, height: 0)
+        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+        return layoutAttributes
+    }
 }

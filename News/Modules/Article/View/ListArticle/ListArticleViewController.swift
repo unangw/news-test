@@ -7,7 +7,6 @@
 
 import UIKit
 import SkeletonView
-import CHTCollectionViewWaterfallLayout
 import RxSwift
 import RxCocoa
 
@@ -20,7 +19,7 @@ class ListArticleViewController: BaseViewController {
     var didSendEventClosure: ((ListArticleViewController.Event) -> Void)?
     var viewModel: ArticleViewModelProtocol?
     var source: SourceItemModel!
-    var customFlowLayout = CHTCollectionViewWaterfallLayout()
+    var customFlowLayout = CustomFlowLayout()
     let refreshControl = UIRefreshControl()
     var page = 1
     var isLoadingNextPage: Bool = false
@@ -90,11 +89,11 @@ class ListArticleViewController: BaseViewController {
         collectionView.register(shimmerNib, forCellWithReuseIdentifier: ArticleShimmerCell.identifier)
         
         // MARK: - Configure CollectionView
+        customFlowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        customFlowLayout.minimumLineSpacing = 16
         customFlowLayout.minimumInteritemSpacing = 16
-        customFlowLayout.minimumColumnSpacing = 16
         customFlowLayout.sectionInset.left = 20
         customFlowLayout.sectionInset.right = 20
-        customFlowLayout.sectionInset.bottom = 20
         collectionView.collectionViewLayout = customFlowLayout
         collectionView.contentInsetAdjustmentBehavior = .always
         collectionView.alwaysBounceVertical = true
@@ -215,7 +214,7 @@ extension ListArticleViewController {
     }
 }
 
-extension ListArticleViewController: UICollectionViewDataSource, UICollectionViewDelegate, CHTCollectionViewDelegateWaterfallLayout {
+extension ListArticleViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     // Part of UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return articlesIsLoading ? 10 : viewModel?.articles.count ?? 0
@@ -256,40 +255,6 @@ extension ListArticleViewController: UICollectionViewDataSource, UICollectionVie
             
             getArticles(page: page+1)
         }
-    }
-    
-    // Part of CHTCollectionViewDelegateWaterfallLayout
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let contentWidth = (collectionView.bounds.width - (20 * 2 + 16)) / 2
-        var contentHeight: CGFloat = 148
-        
-        if !articlesIsLoading {
-            sizingCell.frame.size.width = contentWidth
-            
-            let item = viewModel?.articles[indexPath.item]
-            sizingCell.configure(article: item)
-            
-            sizingCell.setNeedsLayout()
-            sizingCell.layoutIfNeeded()
-            
-            let size = sizingCell.contentView.systemLayoutSizeFitting(
-                CGSize(
-                    width: contentWidth,
-                    height: UIView.layoutFittingExpandedSize.height
-                ),
-                withHorizontalFittingPriority: UILayoutPriority.required,
-                verticalFittingPriority: UILayoutPriority.fittingSizeLevel
-            )
-            
-            contentHeight = size.height
-        }
-        
-        return CGSize(width: contentWidth, height: contentHeight)
-    }
-    
-    // Part of CHTCollectionViewDelegateWaterfallLayout
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, columnCountFor section: Int) -> Int {
-        return 2
     }
 }
 
