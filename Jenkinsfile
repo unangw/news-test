@@ -12,7 +12,7 @@ pipeline {
         stage('Build Swift Project') {
             steps {
                 // Menjalankan build tanpa hambatan virtualisasi
-                sh 'xcodebuild -scheme YourScheme -destination "platform=iOS Simulator,name=iPhone 15" build'
+                sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
             }
         }
     }
