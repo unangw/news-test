@@ -9,6 +9,27 @@ pipeline {
                 sh 'xcode-select -p'
             }
         }
+
+        stage('Testing') {
+            parallel {
+                stage('Linter Check') {
+                    steps {
+                        sh "echo bundle exec fastlane swift_lint"
+                    }
+                }
+                stage('UI Testing') {
+                    steps {
+                        sh "echo bundle exec fastlane ui_testing"
+                    }
+                }
+                stage('Unit Testing') {
+                    steps {
+                        sh "echo bundle exec fastlane unit_testing"
+                    }
+                }
+            }
+        }
+
         stage('Build Swift Project') {
             steps {
                 // Menjalankan build tanpa hambatan virtualisasi
