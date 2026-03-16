@@ -32,7 +32,9 @@ pipeline {
                             -project ${PROJECT_PATH} \
                             -scheme ${SCHEME} \
                             -destination '${DESTINATION}' \
-                            -only-testing:${SCHEME}Tests \
+                            -only-testing:${SCHEME}Tests
+                            # -derivedDataPath 'build/unit_test_dd' \
+                            # -resultBundlePath 'build/unit_test.xcresult'
                         """
                     }
                 }
@@ -47,7 +49,9 @@ pipeline {
                     -project ${PROJECT_PATH} \
                     -scheme ${SCHEME} \
                     -destination '${DESTINATION}' \
-                    -only-testing:${SCHEME}UITests \
+                    -only-testing:${SCHEME}UITests
+                    # -derivedDataPath 'build/ui_test_dd' \
+                    # -resultBundlePath 'build/ui_test.xcresult'
                 """
             }
         }
@@ -69,8 +73,8 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
 
-            echo "Cleaning up..."
-            cleanWs()
+            // echo "Cleaning up..."
+            // cleanWs()
         }
     }
 }
