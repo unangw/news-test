@@ -96,6 +96,7 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
     // Part of UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
+        // swiftlint:disable:next force_cast
         let lay = collectionViewLayout as! UICollectionViewFlowLayout
         let collectionWidth = collectionView.safeAreaLayoutGuide.layoutFrame.width - lay.sectionInset.left - lay.sectionInset.right
         

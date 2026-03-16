@@ -14,6 +14,7 @@ class GridFlowLayout: UICollectionViewFlowLayout {
         guard let originalAttributes = super.layoutAttributesForElements(in: rect) else { return nil }
         
         // Make a deep copy of the attributes to avoid modifying internal cached layout
+        // swiftlint:disable:next force_cast
         let attributes = originalAttributes.map { $0.copy() as! UICollectionViewLayoutAttributes }
         
         // Group attributes by row (items on the same y-position)

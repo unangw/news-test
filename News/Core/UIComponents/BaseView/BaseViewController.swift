@@ -92,7 +92,7 @@ extension BaseViewController {
     @objc private func keyboardWillShow(notification: Notification) {
         if notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] is CGRect {
             UIView.animate(withDuration: 0.2) {
-                if (self.topConstraint!.constant >= 0) {
+                if self.topConstraint!.constant >= 0 {
                     self.topConstraint!.constant
                     -= 150
                     self.view.layoutIfNeeded()

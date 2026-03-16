@@ -37,10 +37,10 @@ extension ArticleEndpoint: Endpoint {
         case .getArticles(let request):
             let httpBody: [String: Any?] = [
                 "apiKey": Environment.apiKey,
-                "q": request.q,
+                "q": request.query,
                 "sources": request.sources?.joined(separator: ","),
                 "page": request.page,
-                "pageSize": request.pageSize,
+                "pageSize": request.pageSize
             ]
             return httpBody.compactMapValues { $0 }
         }

@@ -35,6 +35,6 @@ class Category {
         "Wellness tips and medical discoveries",
         "Scientific research and innovations",
         "Live scores and major athletic events",
-        "New gadgets and software innovations",
+        "New gadgets and software innovations"
     ]
 }

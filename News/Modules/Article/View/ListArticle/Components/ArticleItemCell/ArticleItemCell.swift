@@ -18,11 +18,6 @@ class ArticleItemCell: UICollectionViewCell {
     // MARK: - Variables
     static let identifier = "ArticleItemCell"
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
-    
     func configure(article: ArticleItemModel?) {
         guard let article = article else { return }
         

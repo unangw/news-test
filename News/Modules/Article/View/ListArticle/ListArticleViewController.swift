@@ -158,7 +158,7 @@ class ListArticleViewController: BaseViewController {
         self.page = page
         
         var request = ArticleRequestModel(
-            q: searchTextField.textField.text,
+            query: searchTextField.textField.text,
             sources: nil,
             pageSize: viewModel?.articlePageSize ?? 10,
             page: page
@@ -235,6 +235,7 @@ extension ListArticleViewController: UICollectionViewDataSource, UICollectionVie
             
             if !(viewModel?.articles.isEmpty ?? true) {
                 // Configure cell
+                // swiftlint:disable:next force_cast
                 (cell as! ArticleItemCell).configure(article: viewModel?.articles[indexPath.item])
             }
         }

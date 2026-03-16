@@ -39,7 +39,7 @@ extension SourceEndpoint: Endpoint {
                 "apiKey": Environment.apiKey,
                 "category": request.category,
                 "country": request.country,
-                "language": request.language,
+                "language": request.language
             ]
             return httpBody.compactMapValues { $0 }
         }

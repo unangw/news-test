@@ -27,7 +27,7 @@ extension UIViewController {
                 imageView.centerXAnchor.constraint(equalTo: customView.centerXAnchor),
                 imageView.centerYAnchor.constraint(equalTo: customView.centerYAnchor),
                 imageView.heightAnchor.constraint(equalToConstant: 24),
-                imageView.widthAnchor.constraint(equalToConstant: 24),
+                imageView.widthAnchor.constraint(equalToConstant: 24)
             ])
             
             let tapGesture = (backAction != nil) ? backAction : UITapGestureRecognizer(target: self, action: #selector(backPressed(_:)))
@@ -71,7 +71,7 @@ extension UIViewController {
         }
         
         // Call for disable/remove liquid glass in iOS 26
-        hidesSharedBackground();
+        hidesSharedBackground()
     }
     
     func hidesSharedBackground() {
@@ -79,7 +79,6 @@ extension UIViewController {
             navigationItem.rightBarButtonItems?.forEach { item in
                 item.hidesSharedBackground = true
             }
-            
             
             navigationItem.leftBarButtonItems?.forEach { item in
                 item.hidesSharedBackground = true

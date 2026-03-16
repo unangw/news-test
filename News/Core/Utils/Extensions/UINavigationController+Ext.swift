@@ -11,7 +11,7 @@ extension UINavigationController {
     func navigationBarApperance(color: UIColor? = nil) {
         let appearance = UINavigationBarAppearance()
         appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white,
+            .foregroundColor: UIColor.white
         ]
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = color

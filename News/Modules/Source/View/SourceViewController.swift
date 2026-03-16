@@ -218,6 +218,7 @@ extension SourceViewController: UICollectionViewDataSource, UICollectionViewDele
             
             if !(viewModel?.sources.isEmpty ?? true) {
                 // Configure cell
+                // swiftlint:disable:next force_cast
                 (cell as! SourceItemCell).configure(source: viewModel?.sources[indexPath.item])
             }
         }

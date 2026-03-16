@@ -54,7 +54,7 @@ class ArticleViewModel: ArticleViewModelProtocol {
                 
                 articles.append(contentsOf: response.articles ?? [])
                 
-                if (response.totalResults ?? 0 < 10 || response.articles?.isEmpty ?? true) {
+                if response.totalResults ?? 0 < 10 || response.articles?.isEmpty ?? true {
                     isMaxPage = true
                 }
                 

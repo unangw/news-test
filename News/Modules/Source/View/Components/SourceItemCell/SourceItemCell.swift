@@ -18,11 +18,6 @@ class SourceItemCell: UICollectionViewCell {
     static let identifier = "SourceItemCell"
     var sourceUrl: String?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
-    
     func configure(source: SourceItemModel?) {
         guard let source = source else { return }
         

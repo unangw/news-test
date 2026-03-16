@@ -57,7 +57,7 @@ extension Endpoint {
             
             request = try URLEncoding(destination: .queryString).encode(requestWithBody, with: queryItems as Parameters)
         default:
-            if(!multipart) {
+            if !multipart {
                 request = try JSONEncoding.default.encode(request, with: body)
             }
         }
