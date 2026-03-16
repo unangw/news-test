@@ -38,7 +38,7 @@ pipeline {
             steps {
                 echo "Running UI Tests..."
                 sh """
-                codebuild test \
+                xcodebuild test \
                     -project ${PROJECT_PATH} \
                     -scheme ${SCHEME} \
                     -destination '${DESTINATION}' \
