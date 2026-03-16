@@ -15,39 +15,35 @@ pipeline {
             }
         }
 
-        stage('Testing') {
-            parallel {
-                stage('Linter Check') {
-                    steps {
-                        sh "swiftlint lint --reporter html > swiftlint-report.html"
-                    }
-                }
+        stage('Linter Check') {
+            steps {
+                sh "/opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
+            }
+        }
 
-                stage('Unit Testing') {
-                    steps {
-                        echo "Running Unit Tests..."
-                        sh """
-                        xcodebuild test \
-                            -project ${PROJECT_PATH} \
-                            -scheme ${SCHEME} \
-                            -destination '${DESTINATION}' \
-                            -only-testing:${SCHEME}Tests
-                        """
-                    }
-                }
+        stage('Unit Testing') {
+            steps {
+                echo "Running Unit Tests..."
+                sh """
+                xcodebuild test \
+                    -project ${PROJECT_PATH} \
+                    -scheme ${SCHEME} \
+                    -destination '${DESTINATION}' \
+                    -only-testing:${SCHEME}Tests
+                """
+            }
+        }
 
-                stage('UI Testing') {
-                    steps {
-                        echo "Running UI Tests..."
-                        sh """
-                        xcodebuild test \
-                            -project ${PROJECT_PATH} \
-                            -scheme ${SCHEME} \
-                            -destination '${DESTINATION}' \
-                            -only-testing:${SCHEME}UITests
-                        """
-                    }
-                }
+        stage('UI Testing') {
+            steps {
+                echo "Running UI Tests..."
+                sh """
+                codebuild test \
+                    -project ${PROJECT_PATH} \
+                    -scheme ${SCHEME} \
+                    -destination '${DESTINATION}' \
+                    -only-testing:${SCHEME}UITests
+                """
             }
         }
 
