@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-        state('Static Analysis & Logic Test') {
+        stage('Static Analysis & Logic Test') {
             parallel {
                 stage('Linter Check') {
                     steps {
