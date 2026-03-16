@@ -14,24 +14,28 @@ pipeline {
             }
         }
 
-        stage('Linter Check') {
-            steps {
-                sh "xcrun --sdk iphonesimulator /opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
+        state('Static Analysis & Logic Test') {
+            parallel {
+                stage('Linter Check') {
+                    steps {
+                        sh "xcrun --sdk iphonesimulator /opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
 
-                sh "ls -lh swiftlint-report.html"
-            }
-        }
+                        sh "ls -lh swiftlint-report.html"
+                    }
+                }
 
-        stage('Unit Testing') {
-            steps {
-                echo "Running Unit Tests..."
-                sh """
-                xcodebuild test \
-                    -project ${PROJECT_PATH} \
-                    -scheme ${SCHEME} \
-                    -destination '${DESTINATION}' \
-                    -only-testing:${SCHEME}Tests
-                """
+                stage('Unit Testing') {
+                    steps {
+                        echo "Running Unit Tests..."
+                        sh """
+                        xcodebuild test \
+                            -project ${PROJECT_PATH} \
+                            -scheme ${SCHEME} \
+                            -destination '${DESTINATION}' \
+                            -only-testing:${SCHEME}Tests
+                        """
+                    }
+                }
             }
         }
 
