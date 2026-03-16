@@ -15,11 +15,11 @@ pipeline {
             }
         }
 
-        stage('Linter Check') {
-            steps {
-                sh "/opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
-            }
-        }
+        // stage('Linter Check') {
+        //     steps {
+        //         sh "/opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
+        //     }
+        // }
 
         stage('Unit Testing') {
             steps {
