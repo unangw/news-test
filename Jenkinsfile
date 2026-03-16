@@ -32,23 +32,27 @@ pipeline {
                             -project ${PROJECT_PATH} \
                             -scheme ${SCHEME} \
                             -destination '${DESTINATION}' \
-                            -only-testing:${SCHEME}Tests
+                            -only-testing:${SCHEME}Tests \
+                            -derivedDataPath 'build/unit_test_dd' \
+                            -resultBundlePath 'build/unit_test.xcresult'
                         """
                     }
                 }
-            }
-        }
 
-        stage('UI Testing') {
-            steps {
-                echo "Running UI Tests..."
-                sh """
-                xcodebuild test \
-                    -project ${PROJECT_PATH} \
-                    -scheme ${SCHEME} \
-                    -destination '${DESTINATION}' \
-                    -only-testing:${SCHEME}UITests
-                """
+                stage('UI Testing') {
+                    steps {
+                        echo "Running UI Tests..."
+                        sh """
+                        xcodebuild test \
+                            -project ${PROJECT_PATH} \
+                            -scheme ${SCHEME} \
+                            -destination '${DESTINATION}' \
+                            -only-testing:${SCHEME}UITests \
+                            -derivedDataPath 'build/ui_test_dd' \
+                            -resultBundlePath 'build/ui_test.xcresult'
+                        """
+                    }
+                }
             }
         }
 
