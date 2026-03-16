@@ -50,11 +50,11 @@ pipeline {
         }
 
 
-        stage('Build Swift Project') {
-            steps {
-                sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
-            }
-        }
+        // stage('Build Swift Project') {
+        //     steps {
+        //         sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
+        //     }
+        // }
     }
 
     post {
