@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        WORKSPACE_PATH = 'News.xcodeproj'
+        PROJECT_PATH = 'News.xcodeproj'
         SCHEME = 'News'
         DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
     }
@@ -28,7 +28,7 @@ pipeline {
                         echo "Running Unit Tests..."
                         sh """
                         xcodebuild test \
-                            -workspace ${WORKSPACE_PATH} \
+                            -project ${PROJECT_PATH} \
                             -scheme ${SCHEME} \
                             -destination '${DESTINATION}' \
                             -only-testing:${SCHEME}Tests
@@ -41,7 +41,7 @@ pipeline {
                         echo "Running UI Tests..."
                         sh """
                         xcodebuild test \
-                            -workspace ${WORKSPACE_PATH} \
+                            -project ${PROJECT_PATH} \
                             -scheme ${SCHEME} \
                             -destination '${DESTINATION}' \
                             -only-testing:${SCHEME}UITests
