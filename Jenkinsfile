@@ -1,10 +1,15 @@
 pipeline {
     agent any
 
+    environment {
+        WORKSPACE_PATH = 'News.xcworkspace'
+        SCHEME = 'News'
+        DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
+    }
+
     stages {
         stage('Check Tools') {
             steps {
-                // Memastikan Swift 6 dan Xcode sudah terbaca
                 sh 'swift --version'
                 sh 'xcode-select -p'
             }
@@ -14,27 +19,50 @@ pipeline {
             parallel {
                 stage('Linter Check') {
                     steps {
-                        sh "echo bundle exec fastlane swift_lint"
+                        sh "swiftlint lint --reporter html > swiftlint-report.html"
                     }
                 }
-                stage('UI Testing') {
-                    steps {
-                        sh "echo bundle exec fastlane ui_testing"
-                    }
-                }
+
                 stage('Unit Testing') {
                     steps {
-                        sh "echo bundle exec fastlane unit_testing"
+                        echo "Running Unit Tests..."
+                        sh """
+                        xcodebuild test \
+                            -workspace ${WORKSPACE_PATH} \
+                            -scheme ${SCHEME} \
+                            -destination '${DESTINATION}' \
+                            -only-testing:${SCHEME}Tests
+                        """
+                    }
+                }
+
+                stage('UI Testing') {
+                    steps {
+                        echo "Running UI Tests..."
+                        sh """
+                        xcodebuild test \
+                            -workspace ${WORKSPACE_PATH} \
+                            -scheme ${SCHEME} \
+                            -destination '${DESTINATION}' \
+                            -only-testing:${SCHEME}UITests
+                        """
                     }
                 }
             }
         }
 
+
         stage('Build Swift Project') {
             steps {
-                // Menjalankan build tanpa hambatan virtualisasi
                 sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleaning up..."
+            cleanWs()
         }
     }
 }
