@@ -1,4 +1,10 @@
 swift_version: "5.0"
 
-included:
-  - Source
+disabled_rules:
+  - trailing_whitespace
+  - force_try
+
+excluded:
+  - Pods
+  - build
+  - DerivedData
