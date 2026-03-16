@@ -18,41 +18,43 @@ pipeline {
         stage('Linter Check') {
             steps {
                 sh "xcrun --sdk iphonesimulator /opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
+
+                sh "ls -lh swiftlint-report.html"
             }
         }
 
-        // stage('Unit Testing') {
-        //     steps {
-        //         echo "Running Unit Tests..."
-        //         sh """
-        //         xcodebuild test \
-        //             -project ${PROJECT_PATH} \
-        //             -scheme ${SCHEME} \
-        //             -destination '${DESTINATION}' \
-        //             -only-testing:${SCHEME}Tests
-        //         """
-        //     }
-        // }
+        stage('Unit Testing') {
+            steps {
+                echo "Running Unit Tests..."
+                sh """
+                xcodebuild test \
+                    -project ${PROJECT_PATH} \
+                    -scheme ${SCHEME} \
+                    -destination '${DESTINATION}' \
+                    -only-testing:${SCHEME}Tests
+                """
+            }
+        }
 
-        // stage('UI Testing') {
-        //     steps {
-        //         echo "Running UI Tests..."
-        //         sh """
-        //         xcodebuild test \
-        //             -project ${PROJECT_PATH} \
-        //             -scheme ${SCHEME} \
-        //             -destination '${DESTINATION}' \
-        //             -only-testing:${SCHEME}UITests
-        //         """
-        //     }
-        // }
+        stage('UI Testing') {
+            steps {
+                echo "Running UI Tests..."
+                sh """
+                xcodebuild test \
+                    -project ${PROJECT_PATH} \
+                    -scheme ${SCHEME} \
+                    -destination '${DESTINATION}' \
+                    -only-testing:${SCHEME}UITests
+                """
+            }
+        }
 
 
-        // stage('Build Swift Project') {
-        //     steps {
-        //         sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
-        //     }
-        // }
+        stage('Build Swift Project') {
+            steps {
+                sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
+            }
+        }
     }
 
     post {
