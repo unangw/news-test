@@ -67,7 +67,7 @@ pipeline {
 
     post {
         always {
-            // archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
 
             echo "Cleaning up..."
             cleanWs()
