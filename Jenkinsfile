@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        WORKSPACE_PATH = 'News.xcworkspace'
+        WORKSPACE_PATH = 'News.xcodeproj'
         SCHEME = 'News'
         DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
     }
