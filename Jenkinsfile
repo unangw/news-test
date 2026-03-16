@@ -8,10 +8,9 @@ pipeline {
     }
 
     stages {
-        stage('Check Tools') {
+        stage('Build for Testing') {
             steps {
-                sh 'swift --version'
-                sh 'xcode-select -p'
+                sh "echo bundle exec fastlane build_for_testing"
             }
         }
 
@@ -49,17 +48,22 @@ pipeline {
             }
         }
 
+        stage('Build for Release') {
+            steps {
+                sh "echo bundle exec fastlane build_for_release"
+            }
+        }
 
-        // stage('Build Swift Project') {
-        //     steps {
-        //         sh 'xcodebuild -scheme News -destination "platform=iOS Simulator,name=iPhone 17 Pro" build'
-        //     }
-        // }
+        stage('Release') {
+            steps {
+                sh "echo bundle exec fastlane release_to_firebase"
+            }
+        }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
+            // archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
 
             echo "Cleaning up..."
             cleanWs()
