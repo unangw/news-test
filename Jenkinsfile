@@ -74,7 +74,7 @@ pipeline {
             archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
 
             // echo "Cleaning up..."
-            cleanWs()
+            // cleanWs()
         }
     }
 }
