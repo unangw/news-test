@@ -24,7 +24,9 @@ pipeline {
 
         stage('Static Analysis & Logic Test') {
             parallel {
-                failFast true
+                options {
+                    failFast true
+                }
 
                 stage('Linter Check') {
                     steps {
