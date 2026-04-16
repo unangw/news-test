@@ -4,7 +4,7 @@ pipeline {
     environment {
         PROJECT_PATH = 'News.xcodeproj'
         SCHEME = 'News'
-        DESTINATION = 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest'
+        DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
     }
 
     stages {
