@@ -24,10 +24,6 @@ pipeline {
 
         stage('Static Analysis & Logic Test') {
             parallel {
-                options {
-                    failFast true
-                }
-
                 stage('Linter Check') {
                     steps {
                         sh "xcrun --sdk iphonesimulator /opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
