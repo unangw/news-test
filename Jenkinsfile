@@ -4,10 +4,18 @@ pipeline {
     environment {
         PROJECT_PATH = 'News.xcodeproj'
         SCHEME = 'News'
-        DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
+        DESTINATION = 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest'
     }
 
     stages {
+        stage('Preparation') {
+            steps {
+                script {    
+                    sh "xcrun simctl shutdown all || true"
+                }
+            }
+        }
+
         stage('Build for Testing') {
             steps {
                 sh "echo bundle exec fastlane build_for_testing"
@@ -16,6 +24,8 @@ pipeline {
 
         stage('Static Analysis & Logic Test') {
             parallel {
+                failFast true
+
                 stage('Linter Check') {
                     steps {
                         sh "xcrun --sdk iphonesimulator /opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
@@ -73,8 +83,8 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
 
-            // echo "Cleaning up..."
-            // cleanWs()
+            echo "Cleaning up..."
+            cleanWs()
         }
     }
 }
