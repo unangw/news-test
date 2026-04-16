@@ -27,15 +27,15 @@ pipeline {
                 stage('Unit Testing') {
                     steps {
                         echo "Running Unit Tests..."
-                        // sh """
-                        // xcodebuild test \
-                        //     -project ${PROJECT_PATH} \
-                        //     -scheme ${SCHEME} \
-                        //     -destination '${DESTINATION}' \
-                        //     -only-testing:${SCHEME}Tests
-                        //     # -derivedDataPath 'build/unit_test_dd' \
-                        //     # -resultBundlePath 'build/unit_test.xcresult'
-                        // """
+                        sh """
+                        xcodebuild test \
+                            -project ${PROJECT_PATH} \
+                            -scheme ${SCHEME} \
+                            -destination '${DESTINATION}' \
+                            -only-testing:${SCHEME}Tests
+                            # -derivedDataPath 'build/unit_test_dd' \
+                            # -resultBundlePath 'build/unit_test.xcresult'
+                        """
                     }
                 }
             }
