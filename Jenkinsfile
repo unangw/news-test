@@ -8,14 +8,6 @@ pipeline {
     }
 
     stages {
-        stage('Preparation') {
-            steps {
-                script {    
-                    sh "xcrun simctl shutdown all || true"
-                }
-            }
-        }
-
         stage('Build for Testing') {
             steps {
                 sh "echo bundle exec fastlane build_for_testing"
@@ -81,7 +73,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
 
-            echo "Cleaning up..."
+            // echo "Cleaning up..."
             cleanWs()
         }
     }
