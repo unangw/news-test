@@ -36,38 +36,59 @@ pipeline {
             }
         }
 
-        stage('Testing') {
-            parallel {
-
-                stage('Linter Check') {
+        stage('Linter Check') {
                     steps {
                         echo "Running SwiftLint via fastlane..."
                         sh 'bundle exec fastlane ci_lint'
                     }
                 }
 
-                stage('TestPlan Test') {
+                stage('Unit Testing') {
                     steps {
-                        echo "Running TestPlan Test via fastlane..."
-                        sh 'bundle exec fastlane test_with_testplan'
+                        echo "Running unit tests via fastlane (test-without-building)..."
+                        sh 'bundle exec fastlane ci_unit_tests'
                     }
                 }
 
-                // stage('Unit Testing') {
-                //     steps {
-                //         echo "Running unit tests via fastlane (test-without-building)..."
-                //         sh 'bundle exec fastlane ci_unit_tests'
-                //     }
-                // }
+                stage('UI Testing') {
+                    steps {
+                        echo "Running UI tests via fastlane (sequential runner)..."
+                        sh 'bundle exec fastlane ci_ui_tests'
+                    }
+                }
 
-                // stage('UI Testing') {
-                //     steps {
-                //         echo "Running UI tests via fastlane (sequential runner)..."
-                //         sh 'bundle exec fastlane ci_ui_tests'
-                //     }
-                // }
-            }
-        }
+        // stage('Testing') {
+        //     parallel {
+
+        //         stage('Linter Check') {
+        //             steps {
+        //                 echo "Running SwiftLint via fastlane..."
+        //                 sh 'bundle exec fastlane ci_lint'
+        //             }
+        //         }
+
+        //         stage('TestPlan Test') {
+        //             steps {
+        //                 echo "Running TestPlan Test via fastlane..."
+        //                 sh 'bundle exec fastlane test_with_testplan'
+        //             }
+        //         }
+
+        //         stage('Unit Testing') {
+        //             steps {
+        //                 echo "Running unit tests via fastlane (test-without-building)..."
+        //                 sh 'bundle exec fastlane ci_unit_tests'
+        //             }
+        //         }
+
+        //         stage('UI Testing') {
+        //             steps {
+        //                 echo "Running UI tests via fastlane (sequential runner)..."
+        //                 sh 'bundle exec fastlane ci_ui_tests'
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('UI Testing') {
         //             steps {
