@@ -33,7 +33,7 @@ pipeline {
         }
 
         stage('Testing') {
-            parallel {
+            parallel failFast: true {
 
                 stage('Linter Check') {
                     steps {
