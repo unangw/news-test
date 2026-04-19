@@ -52,13 +52,13 @@ pipeline {
                         sh 'bundle exec fastlane ci_unit_tests'
                     }
                 }
-            }
-        }
 
-        stage('UI Testing') {
-            steps {
-                echo "Running UI tests via fastlane (sequential runner)..."
-                sh 'bundle exec fastlane ci_ui_tests'
+                stage('UI Testing') {
+                    steps {
+                        echo "Running UI tests via fastlane (sequential runner)..."
+                        sh 'bundle exec fastlane ci_ui_tests'
+                    }
+                }
             }
         }
 
