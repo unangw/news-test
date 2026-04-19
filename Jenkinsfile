@@ -22,7 +22,7 @@ pipeline {
 
     stages {
 
-        stage('Install dependencies') {
+        stage('Configure Environment') {
             steps {
                 echo "Installing Ruby gems (fastlane)..."
                 sh 'bundle install --jobs 4 --retry 3'
