@@ -28,14 +28,14 @@ struct NewsTests {
     }
 
     @Test func articleRequestModel_equatableDifferentPage_isNotEqual() {
-        let lhs = ArticleRequestModel(q: "apple", sources: ["cnn"], pageSize: 20, page: 1)
-        let rhs = ArticleRequestModel(q: "apple", sources: ["cnn"], pageSize: 20, page: 2)
+        let lhs = ArticleRequestModel(query: "apple", sources: ["cnn"], pageSize: 20, page: 1)
+        let rhs = ArticleRequestModel(query: "apple", sources: ["cnn"], pageSize: 20, page: 2)
 
         #expect(lhs != rhs)
     }
 
     @Test func articleRequestModel_codable_roundTripPreservesValues() throws {
-        let request = ArticleRequestModel(q: "tesla", sources: ["bbc-news", "cnn"], pageSize: 10, page: 3)
+        let request = ArticleRequestModel(query: "tesla", sources: ["bbc-news", "cnn"], pageSize: 10, page: 3)
         let encoded = try JSONEncoder().encode(request)
         let decoded = try JSONDecoder().decode(ArticleRequestModel.self, from: encoded)
 
@@ -75,7 +75,7 @@ struct NewsTests {
     }
 
     @Test func articleEndpoint_getArticles_hasExpectedDefaults() {
-        let request = ArticleRequestModel(q: nil, sources: nil, pageSize: nil, page: nil)
+        let request = ArticleRequestModel(query: nil, sources: nil, pageSize: nil, page: nil)
         let endpoint = ArticleEndpoint.getArticles(request: request)
 
         #expect(endpoint.path == "/v2/everything")
