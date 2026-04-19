@@ -16,10 +16,13 @@ extension UIViewController {
             let customView = UIView()
             customView.translatesAutoresizingMaskIntoConstraints = false
             customView.backgroundColor = .clear
+            customView.isAccessibilityElement = true
+            customView.accessibilityIdentifier = "nav_back_button"
             
             let imageView = UIImageView()
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.image = .icArrowLeft
+            imageView.isAccessibilityElement = false
             
             customView.addSubview(imageView)
             
@@ -27,7 +30,7 @@ extension UIViewController {
                 imageView.centerXAnchor.constraint(equalTo: customView.centerXAnchor),
                 imageView.centerYAnchor.constraint(equalTo: customView.centerYAnchor),
                 imageView.heightAnchor.constraint(equalToConstant: 24),
-                imageView.widthAnchor.constraint(equalToConstant: 24)
+                imageView.widthAnchor.constraint(equalToConstant: 24),
             ])
             
             let tapGesture = (backAction != nil) ? backAction : UITapGestureRecognizer(target: self, action: #selector(backPressed(_:)))
