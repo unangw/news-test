@@ -60,21 +60,21 @@ pipeline {
                     }
                 }
 
-                // stage('UI Testing') {
-                //     steps {
-                //         echo "Running UI tests via fastlane (sequential runner)..."
-                //         sh 'bundle exec fastlane ci_ui_tests'
-                //     }
-                // }
-            }
-        }
-
-        stage('UI Testing') {
+                stage('UI Testing') {
                     steps {
                         echo "Running UI tests via fastlane (sequential runner)..."
                         sh 'bundle exec fastlane ci_ui_tests'
                     }
                 }
+            }
+        }
+
+        // stage('UI Testing') {
+        //             steps {
+        //                 echo "Running UI tests via fastlane (sequential runner)..."
+        //                 sh 'bundle exec fastlane ci_ui_tests'
+        //             }
+        //         }
 
         stage('Build for Release') {
             steps {
