@@ -13,6 +13,7 @@ pipeline {
 
         DD_PATH = "${WORKSPACE}/build/derived_data"
         CLONED_SOURCE_PACKAGES_DIR = "${WORKSPACE}/build/SourcePackages"
+        SWIFTLINT_EXECUTABLE       = '/opt/homebrew/bin/swiftlint'
     }
 
     stages {

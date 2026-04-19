@@ -16,6 +16,25 @@ def simulator_destination
   ENV.fetch("DESTINATION", "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest")
 end
 
+def swiftlint_executable
+  from_env = ENV["SWIFTLINT_EXECUTABLE"].to_s.strip
+  return from_env if !from_env.empty? && File.executable?(from_env)
+
+  %w[
+    /opt/homebrew/bin/swiftlint
+    /usr/local/bin/swiftlint
+  ].each do |path|
+    return path if File.executable?(path)
+  end
+
+  ENV["PATH"].to_s.split(File::PATH_SEPARATOR).each do |dir|
+    candidate = File.join(dir, "swiftlint")
+    return candidate if File.executable?(candidate)
+  end
+
+  nil
+end
+
 platform :ios do
   desc "run_tests with build_for_testing (same as scan; produces .xctestrun for later steps)"
   lane :compile_for_testing do
@@ -30,13 +49,20 @@ platform :ios do
 
   desc "SwiftLint HTML report (non-failing; same spirit as Jenkins `|| true`)"
   lane :ci_lint do
-    swiftlint(
-      mode: :lint,
-      reporter: "html",
-      output_file: "swiftlint-report.html",
-      ignore_exit_status: true,
-      executable: ENV["SWIFTLINT_EXECUTABLE"] || "swiftlint"
-    )
+    exe = swiftlint_executable
+    if exe.nil?
+      UI.important("SwiftLint not found (set SWIFTLINT_EXECUTABLE or install swiftlint). Skipping lint; writing placeholder report.")
+      File.write(File.join(Dir.pwd, "swiftlint-report.html"), "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>SwiftLint</title></head><body><p>SwiftLint executable not found on this machine.</p></body></html>\n")
+    else
+      UI.message("Using SwiftLint at: #{exe}")
+      swiftlint(
+        mode: :lint,
+        reporter: "html",
+        output_file: "swiftlint-report.html",
+        ignore_exit_status: true,
+        executable: exe
+      )
+    end
   end
 
   desc "Unit tests using existing .xctestrun"
