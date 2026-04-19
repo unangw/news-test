@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        parallelsAlwaysFailFast()
+    }
+
     environment {
         LC_ALL                      = 'en_US.UTF-8'
         LANG                        = 'en_US.UTF-8'
@@ -33,7 +37,7 @@ pipeline {
         }
 
         stage('Testing') {
-            parallel failFast: true {
+            parallel {
 
                 stage('Linter Check') {
                     steps {
