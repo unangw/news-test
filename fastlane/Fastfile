@@ -19,11 +19,12 @@ end
 platform :ios do
   desc "xcodebuild build-for-testing (produces .xctestrun for later scan steps)"
   lane :compile_for_testing do
-    build_for_testing(
+    scan(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
       scheme: ENV.fetch("SCHEME", "News"),
       destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data"))
+      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+      build_for_testing: true
     )
   end
 
