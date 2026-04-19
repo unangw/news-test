@@ -2,40 +2,48 @@ pipeline {
     agent any
 
     environment {
+        LC_ALL                      = 'en_US.UTF-8'
+        LANG                        = 'en_US.UTF-8'
+        FASTLANE_SKIP_UPDATE_CHECK  = 'true'
+        FASTLANE_HIDE_CHANGELOG     = 'true'
+
         PROJECT_PATH = 'News.xcodeproj'
-        SCHEME = 'News'
-        DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
+        SCHEME       = 'News'
+        DESTINATION  = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
+
+        DD_PATH = "${WORKSPACE}/build/derived_data"
     }
 
     stages {
-        stage('Build for Testing') {
+
+        stage('Install dependencies') {
             steps {
-                sh "echo bundle exec fastlane build_for_testing"
+                echo "Installing Ruby gems (fastlane)..."
+                sh 'bundle install --jobs 4 --retry 3'
             }
         }
 
-        stage('Static Analysis & Logic Test') {
+        stage('Build for Testing') {
+            steps {
+                echo "Compiling application and test targets via fastlane..."
+                sh 'bundle exec fastlane compile_for_testing'
+            }
+        }
+
+        stage('Testing') {
             parallel {
+
                 stage('Linter Check') {
                     steps {
-                        sh "xcrun --sdk iphonesimulator /opt/homebrew/bin/swiftlint lint --reporter html > swiftlint-report.html"
-
-                        sh "ls -lh swiftlint-report.html"
+                        echo "Running SwiftLint via fastlane..."
+                        sh 'bundle exec fastlane ci_lint'
                     }
                 }
 
                 stage('Unit Testing') {
                     steps {
-                        echo "Running Unit Tests..."
-                        sh """
-                        xcodebuild test \
-                            -project ${PROJECT_PATH} \
-                            -scheme ${SCHEME} \
-                            -destination '${DESTINATION}' \
-                            -only-testing:${SCHEME}Tests
-                            # -derivedDataPath 'build/unit_test_dd' \
-                            # -resultBundlePath 'build/unit_test.xcresult'
-                        """
+                        echo "Running unit tests via fastlane (test-without-building)..."
+                        sh 'bundle exec fastlane ci_unit_tests'
                     }
                 }
             }
@@ -43,28 +51,20 @@ pipeline {
 
         stage('UI Testing') {
             steps {
-                echo "Running UI Tests..."
-                sh """
-                xcodebuild test \
-                    -project ${PROJECT_PATH} \
-                    -scheme ${SCHEME} \
-                    -destination '${DESTINATION}' \
-                    -only-testing:${SCHEME}UITests
-                    # -derivedDataPath 'build/ui_test_dd' \
-                    # -resultBundlePath 'build/ui_test.xcresult'
-                """
+                echo "Running UI tests via fastlane (sequential runner)..."
+                sh 'bundle exec fastlane ci_ui_tests'
             }
         }
 
         stage('Build for Release') {
             steps {
-                sh "echo bundle exec fastlane build_for_release"
+                sh 'bundle exec fastlane build_for_release'
             }
         }
 
         stage('Release') {
             steps {
-                sh "echo bundle exec fastlane release_to_firebase"
+                sh 'bundle exec fastlane release_to_firebase'
             }
         }
     }
@@ -72,9 +72,12 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'build/*.xcresult/**', allowEmptyArchive: true
 
-            // echo "Cleaning up..."
-            // cleanWs()
+            echo "Cleaning up environment..."
+            sh 'xcrun simctl shutdown all || true'
+
+            cleanWs()
         }
     }
 }
