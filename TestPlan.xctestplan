@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "18A2DBFF-C217-463A-957B-F94685C9B07C",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:News.xcodeproj",
+        "identifier" : "220F4CD72F551F2100670C8D",
+        "name" : "NewsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:News.xcodeproj",
+        "identifier" : "220F4CE12F551F2100670C8D",
+        "name" : "NewsUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

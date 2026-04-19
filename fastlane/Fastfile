@@ -16,6 +16,10 @@ def simulator_destination
   ENV.fetch("DESTINATION", "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest")
 end
 
+def test_plan_name
+  ENV.fetch("TEST_PLAN", "TestPlan")
+end
+
 def swiftlint_executable
   from_env = ENV["SWIFTLINT_EXECUTABLE"].to_s.strip
   return from_env if !from_env.empty? && File.executable?(from_env)
@@ -91,6 +95,21 @@ platform :ios do
       only_testing: ["NewsUITests"],
       parallel_testing: false,
       result_bundle_path: File.join(Dir.pwd, "build", "ui_test.xcresult")
+    )
+  end
+
+  desc "Run all targets defined in TestPlan.xctestplan (NewsTests + NewsUITests). Override plan with TEST_PLAN."
+  lane :test_with_testplan do
+    run_tests(
+      project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
+      scheme: ENV.fetch("SCHEME", "News"),
+      xctestrun: resolved_xctestrun,
+      destination: simulator_destination,
+      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+      test_without_building: true,
+      testplan: test_plan_name,
+      parallel_testing: false,
+      result_bundle_path: File.join(Dir.pwd, "build", "testplan.xcresult")
     )
   end
 
