@@ -12,6 +12,7 @@ pipeline {
         DESTINATION  = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
 
         DD_PATH = "${WORKSPACE}/build/derived_data"
+        CLONED_SOURCE_PACKAGES_DIR = "${WORKSPACE}/build/SourcePackages"
     }
 
     stages {

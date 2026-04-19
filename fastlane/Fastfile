@@ -17,9 +17,9 @@ def simulator_destination
 end
 
 platform :ios do
-  desc "xcodebuild build-for-testing (produces .xctestrun for later scan steps)"
+  desc "run_tests with build_for_testing (same as scan; produces .xctestrun for later steps)"
   lane :compile_for_testing do
-    scan(
+    run_tests(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
       scheme: ENV.fetch("SCHEME", "News"),
       destination: simulator_destination,
@@ -41,7 +41,7 @@ platform :ios do
 
   desc "Unit tests using existing .xctestrun"
   lane :ci_unit_tests do
-    scan(
+    run_tests(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
       scheme: ENV.fetch("SCHEME", "News"),
       xctestrun: resolved_xctestrun,
@@ -55,7 +55,7 @@ platform :ios do
 
   desc "UI tests using existing .xctestrun (parallel testing disabled)"
   lane :ci_ui_tests do
-    scan(
+    run_tests(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
       scheme: ENV.fetch("SCHEME", "News"),
       xctestrun: resolved_xctestrun,
