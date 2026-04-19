@@ -78,7 +78,24 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'swiftlint-report.html', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'build/*.xcresult/**', allowEmptyArchive: true
+
+            // .xcresult is a directory bundle; plain globs like build/*.xcresult/** often match nothing in archiveArtifacts.
+            // Produce zip archives (ditto preserves bundle structure on macOS agents) and archive explicit tree patterns.
+            sh '''
+                set +e
+                for name in unit_test ui_test; do
+                    SRC="${WORKSPACE}/build/${name}.xcresult"
+                    if [ -d "$SRC" ]; then
+                        rm -f "${WORKSPACE}/${name}.xcresult.zip"
+                        /usr/bin/ditto -c -k --sequesterRsrc --keepParent "$SRC" "${WORKSPACE}/${name}.xcresult.zip" && \
+                            echo "Packed ${name}.xcresult -> ${name}.xcresult.zip"
+                    else
+                        echo "No ${name}.xcresult at $SRC (stage may have been skipped or failed before tests)."
+                    fi
+                done
+                exit 0
+            '''
+            archiveArtifacts artifacts: 'unit_test.xcresult.zip,ui_test.xcresult.zip', allowEmptyArchive: true
 
             echo "Cleaning up environment..."
             sh 'xcrun simctl shutdown all || true'
