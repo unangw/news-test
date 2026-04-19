@@ -107,7 +107,7 @@ pipeline {
             echo "Cleaning up environment..."
             sh 'xcrun simctl shutdown all || true'
 
-            cleanWs()
+            // cleanWs()
         }
     }
 }
