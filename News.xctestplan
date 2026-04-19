@@ -1,15 +1,20 @@
 {
   "configurations" : [
     {
-      "id" : "18A2DBFF-C217-463A-957B-F94685C9B07C",
-      "name" : "Configuration 1",
+      "id" : "DDD20EFF-5EFF-4922-9523-93E06DA866EE",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-    "testTimeoutsEnabled" : true
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:News.xcodeproj",
+      "identifier" : "220F4CC12F551F1F00670C8D",
+      "name" : "News"
+    }
   },
   "testTargets" : [
     {
@@ -21,6 +26,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:News.xcodeproj",
         "identifier" : "220F4CE12F551F2100670C8D",

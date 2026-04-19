@@ -17,7 +17,7 @@ def simulator_destination
 end
 
 def test_plan_name
-  ENV.fetch("TEST_PLAN", "TestPlan")
+  ENV.fetch("TEST_PLAN", "News")
 end
 
 def swiftlint_executable
