@@ -99,7 +99,10 @@ platform :ios do
   end
 
   desc "Run all targets defined in TestPlan.xctestplan (NewsTests + NewsUITests). Override plan with TEST_PLAN."
-  lane :test_with_testplan do
+  lane :test_with_testplan do |options|
+    build_num = options[:JENKINS_BUILD_NUMBER] || "local"
+    unique_result_path = File.join(Dir.pwd, "build", "testplan-#{build_num}.xcresult")
+
     run_tests(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
       scheme: ENV.fetch("SCHEME", "News"),
@@ -109,7 +112,7 @@ platform :ios do
       test_without_building: true,
       testplan: test_plan_name,
       parallel_testing: false,
-      result_bundle_path: File.join(Dir.pwd, "build", "testplan.xcresult")
+      result_bundle_path: unique_result_path
     )
   end
 
