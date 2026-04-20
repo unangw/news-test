@@ -116,7 +116,8 @@ pipeline {
             echo "Cleaning up environment..."
             sh 'xcrun simctl shutdown all || true'
 
-            cleanWs()
+            // Disable cleanWs() because delete cache is setup to configurable
+            // cleanWs()
         }
     }
 }
