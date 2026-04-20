@@ -26,6 +26,20 @@ pipeline {
             defaultValue: false, 
             description: 'Check this box to delete the DerivedData/Cache folder before starting the build.'
         )
+
+        string (
+            name: 'VERSION_NAME',
+            description: 'Version Name:',
+            defaultValue: '4.40.0',
+            trim: true
+        )
+        
+      string (
+        name: 'VERSION_CODE',
+        description: 'Version Code:',
+        defaultValue: '4400001',
+        trim: true
+      )
     }
 
     stages {
