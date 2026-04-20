@@ -100,7 +100,7 @@ platform :ios do
 
   desc "Run all targets defined in TestPlan.xctestplan (NewsTests + NewsUITests). Override plan with TEST_PLAN."
   lane :test_with_testplan do |options|
-    build_num = options[:JENKINS_BUILD_NUMBER] || "local"
+    build_num = options[:VERSION_CODE] || "local"
     unique_result_path = File.join(Dir.pwd, "build", "testplan-#{build_num}.xcresult")
 
     run_tests(
