@@ -34,12 +34,12 @@ pipeline {
             trim: true
         )
         
-      string (
-        name: 'VERSION_CODE',
-        description: 'Version Code:',
-        defaultValue: '4400001',
-        trim: true
-      )
+        string (
+            name: 'VERSION_CODE',
+            description: 'Version Code:',
+            defaultValue: '4400001',
+            trim: true
+        )
     }
 
     stages {
