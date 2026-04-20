@@ -20,7 +20,26 @@ pipeline {
         SWIFTLINT_EXECUTABLE       = '/opt/homebrew/bin/swiftlint'
     }
 
+    parameters {
+        booleanParam(
+            name: 'FORCE_CLEAN', 
+            defaultValue: false, 
+            description: 'Check this box to delete the DerivedData/Cache folder before starting the build.'
+        )
+    }
+
     stages {
+
+        stage('Cleanup Cache') {
+            when { 
+                expression { params.FORCE_CLEAN == true } 
+            }
+            steps {
+                echo "FORCE_CLEAN is true. Cleaning workspace..."
+                // Adjust this path to match your actual DerivedData location
+                sh "rm -rf ${DD_PATH}"
+            }
+        }
 
         stage('Configure Environment') {
             steps {
