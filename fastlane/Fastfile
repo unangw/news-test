@@ -12,6 +12,11 @@ def resolved_xctestrun
   path
 end
 
+def shared_xcargs
+  source_packages_path = ENV.fetch("CLONED_SOURCE_PACKAGES_DIR", File.join(Dir.pwd, "build", "SourcePackages"))
+  "-clonedSourcePackagesDirPath '#{source_packages_path}'"
+end
+
 def simulator_destination
   ENV.fetch("DESTINATION", "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest")
 end
@@ -47,7 +52,8 @@ platform :ios do
       scheme: ENV.fetch("SCHEME", "News"),
       destination: simulator_destination,
       derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
-      build_for_testing: true
+      build_for_testing: true,
+      xcargs: shared_xcargs
     )
   end
 
