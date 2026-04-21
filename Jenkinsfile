@@ -69,6 +69,8 @@ pipeline {
                     
                     else if (params.BUILD_STRATEGY == 'JOB_CACHER') {
                         sh "rm -rf ${DD_PATH}"
+                        sh "rm -rf ${CLONED_SOURCE_PACKAGES_DIR}"
+                        
                         cache(maxCacheSize: 10240, defaultBranch: params.BRANCH_NAME, caches: [
                             arbitraryFileCache(
                                 path: "${DD_PATH}",
@@ -88,6 +90,8 @@ pipeline {
                     
                     else {
                         sh "rm -rf ${DD_PATH}"
+                        sh "rm -rf ${CLONED_SOURCE_PACKAGES_DIR}"
+                        
                         sh 'bundle exec fastlane compile_for_testing'
                     }
                 }
