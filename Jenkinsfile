@@ -76,13 +76,16 @@ pipeline {
         // }
 
         stage('Build') {
-            steps {
-                cache(key: "ios-compile-cache-${env.BRANCH_NAME}", path: "${env.DD_PATH}") {
-                    echo "Compiling application..."
-                    sh 'bundle exec fastlane compile_for_testing'
-                }
-            }
+    steps {
+        // Correct syntax for Job Cacher plugin
+        caches([
+            cache(key: "ios-compile-cache-${env.BRANCH_NAME ?: 'main'}", path: "${env.DD_PATH}")
+        ]) {
+            echo "Compiling application..."
+            sh 'bundle exec fastlane compile_for_testing'
         }
+    }
+}
 
         stage('Testing') {
             parallel {
