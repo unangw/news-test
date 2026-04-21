@@ -72,7 +72,7 @@ platform :ios do
   desc "Unit tests using existing .xctestrun"
   lane :ci_unit_tests do |options|
     build_num = options[:JENKINS_VERSION_CODE] || "local"
-    unique_result_path = File.join(Dir.pwd, "build", "testplan-#{build_num}.xcresult")
+    unique_result_path = File.join(Dir.pwd, "build", "unit-test-#{build_num}.xcresult")
 
     run_tests(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
@@ -89,7 +89,7 @@ platform :ios do
   desc "UI tests using existing .xctestrun (parallel testing disabled)"
   lane :ci_ui_tests do |options|
     build_num = options[:JENKINS_VERSION_CODE] || "local"
-    unique_result_path = File.join(Dir.pwd, "build", "testplan-#{build_num}.xcresult")
+    unique_result_path = File.join(Dir.pwd, "build", "ui-test-#{build_num}.xcresult")
 
     run_tests(
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
