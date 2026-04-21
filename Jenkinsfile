@@ -81,8 +81,8 @@ pipeline {
                 
                 cache(maxCacheSize: 10240, defaultBranch: 'main', caches: [
                     arbitraryFileCache(
-                        path: 'DerivedData',
-                        cacheValidityDecidingFile: 'Alfagift.xcodeproj/project.pbxproj'
+                        path: "${DD_PATH}",
+                        cacheValidityDecidingFile: "${PROJECT_PATH}/project.pbxproj"
                     )
                 ]) {
                     sh 'bundle exec fastlane compile_for_testing'
