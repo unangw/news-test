@@ -21,6 +21,12 @@ pipeline {
     }
 
     parameters {
+        string(
+            name: 'BRANCH_NAME', 
+            defaultValue: 'main', 
+            description: 'Nama branch untuk cache'
+        )
+        
         booleanParam(
             name: 'FORCE_CLEAN', 
             defaultValue: false, 
@@ -62,10 +68,19 @@ pipeline {
             }
         }
 
-        stage('Build for Testing') {
+        // stage('Build for Testing') {
+        //     steps {
+        //         echo "Compiling application and test targets via fastlane..."
+        //         sh 'bundle exec fastlane compile_for_testing'
+        //     }
+        // }
+
+        stage('Build') {
             steps {
-                echo "Compiling application and test targets via fastlane..."
-                sh 'bundle exec fastlane compile_for_testing'
+                cache(key: "ios-compile-cache-${env.BRANCH_NAME}", path: "${env.DD_PATH}") {
+                    echo "Compiling application..."
+                    sh 'bundle exec fastlane compile_for_testing'
+                }
             }
         }
 
