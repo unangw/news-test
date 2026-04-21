@@ -38,7 +38,7 @@
 		220F4CC22F551F1F00670C8D /* News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = News.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		220F4CD82F551F2100670C8D /* NewsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NewsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		220F4CE22F551F2100670C8D /* NewsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NewsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		22EBB6A82F94A562005F89E9 /* News.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = News.xctestplan; sourceTree = "<group>"; };
+		22EBB6A82F94A562005F89E9 /* News.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = News.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
