@@ -17,6 +17,7 @@ pipeline {
 
         DD_PATH = "${WORKSPACE}/build/derived_data"
         CLONED_SOURCE_PACKAGES_DIR = "${WORKSPACE}/build/SourcePackages"
+        RESOLVED_PACKAGES_PATH = "${PROJECT_PATH}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
         SWIFTLINT_EXECUTABLE       = '/opt/homebrew/bin/swiftlint'
     }
 
@@ -73,6 +74,12 @@ pipeline {
                                 path: "${DD_PATH}",
                                 compressionMethod: 'TARGZ',
                                 cacheValidityDecidingFile: "${PROJECT_PATH}/project.pbxproj"
+                            ),
+
+                            arbitraryFileCache(
+                                path: "${CLONED_SOURCE_PACKAGES_DIR}",
+                                compressionMethod: 'TARGZ',
+                                cacheValidityDecidingFile: "${RESOLVED_PACKAGES_PATH}"
                             )
                         ]) {
                             sh 'bundle exec fastlane compile_for_testing'
