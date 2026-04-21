@@ -79,19 +79,19 @@ pipeline {
                     }
                 }
 
-                stage('TestPlan Test') {
-                    steps {
-                        echo "Running TestPlan Test via fastlane..."
-                        sh "bundle exec fastlane test_with_testplan JENKINS_VERSION_CODE:'${params.VERSION_CODE}'"
-                    }
-                }
-
-                // stage('Unit Testing') {
+                // stage('TestPlan Test') {
                 //     steps {
-                //         echo "Running unit tests via fastlane (test-without-building)..."
-                //         sh "bundle exec fastlane ci_unit_tests JENKINS_VERSION_CODE:'${params.VERSION_CODE}'"
+                //         echo "Running TestPlan Test via fastlane..."
+                //         sh "bundle exec fastlane test_with_testplan JENKINS_VERSION_CODE:'${params.VERSION_CODE}'"
                 //     }
                 // }
+
+                stage('Unit Testing') {
+                    steps {
+                        echo "Running unit tests via fastlane (test-without-building)..."
+                        sh "bundle exec fastlane ci_unit_tests JENKINS_VERSION_CODE:'${params.VERSION_CODE}'"
+                    }
+                }
 
                 // stage('UI Testing') {
                 //     steps {
@@ -102,12 +102,12 @@ pipeline {
             }
         }
 
-        // stage('UI Testing') {
-        //             steps {
-        //                 echo "Running UI tests via fastlane (sequential runner)..."
-        //                 sh "bundle exec fastlane ci_ui_tests JENKINS_VERSION_CODE:'${params.VERSION_CODE}'"
-        //             }
-        //         }
+        stage('UI Testing') {
+            steps {
+                echo "Running UI tests via fastlane (sequential runner)..."
+                sh "bundle exec fastlane ci_ui_tests JENKINS_VERSION_CODE:'${params.VERSION_CODE}'"
+            }
+        }
 
         stage('Build for Release') {
             steps {
