@@ -3,7 +3,7 @@
 default_platform(:ios)
 
 def resolved_xctestrun
-  dd = File.expand_path(ENV.fetch("DD_PATH", "build/derived_data"))
+  dd = ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data"))
   pattern = File.join(dd, "Build", "Products", "**", "*.xctestrun")
   path = Dir.glob(pattern).first
   UI.user_error!("Could not find .xctestrun under #{dd}") unless path
@@ -46,7 +46,7 @@ platform :ios do
       project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
       scheme: ENV.fetch("SCHEME", "News"),
       destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", "build/derived_data"),
+      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data"))
       build_for_testing: true
     )
   end
@@ -79,7 +79,7 @@ platform :ios do
       scheme: ENV.fetch("SCHEME", "News"),
       xctestrun: resolved_xctestrun,
       destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", "build/derived_data"),
+      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
       test_without_building: true,
       only_testing: ["NewsTests"],
       result_bundle_path: unique_result_path
@@ -96,7 +96,7 @@ platform :ios do
       scheme: ENV.fetch("SCHEME", "News"),
       xctestrun: resolved_xctestrun,
       destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", "build/derived_data"),
+      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
       test_without_building: true,
       only_testing: ["NewsUITests"],
       parallel_testing: false,
@@ -114,7 +114,7 @@ platform :ios do
       scheme: ENV.fetch("SCHEME", "News"),
       xctestrun: resolved_xctestrun,
       destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", "build/derived_data"),
+      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
       test_without_building: true,
       testplan: test_plan_name,
       parallel_testing: false,
