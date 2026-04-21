@@ -85,6 +85,10 @@ pipeline {
                         cacheValidityDecidingFile: "${PROJECT_PATH}/project.pbxproj"
                     )
                 ]) {
+                    echo "--- Check the cache has restored ---"
+                    sh "ls -lh ${DD_PATH} || echo 'Folder is Empty'"
+                    
+                    echo "Compiling application..."
                     sh 'bundle exec fastlane compile_for_testing'
                 }
             }
