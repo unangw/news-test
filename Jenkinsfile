@@ -75,17 +75,20 @@ pipeline {
         //     }
         // }
 
-        stage('Build') {
-    steps {
-        // Correct syntax for Job Cacher plugin
-        caches([
-            cache(key: "ios-compile-cache-${env.BRANCH_NAME ?: 'main'}", path: "${env.DD_PATH}")
-        ]) {
-            echo "Compiling application..."
-            sh 'bundle exec fastlane compile_for_testing'
+        stage('Build for Testing') {
+            steps {
+                echo "Compiling application and test targets with caching..."
+                
+                cache(maxCacheSize: 10240, defaultBranch: 'main', caches: [
+                    arbitraryFileCache(
+                        path: 'DerivedData',
+                        cacheValidityDecidingFile: 'Alfagift.xcodeproj/project.pbxproj'
+                    )
+                ]) {
+                    sh 'bundle exec fastlane compile_for_testing'
+                }
+            }
         }
-    }
-}
 
         stage('Testing') {
             parallel {
