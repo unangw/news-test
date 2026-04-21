@@ -77,22 +77,75 @@ pipeline {
 
         stage('Build for Testing') {
             steps {
-                echo "Compiling application and test targets with caching..."
-                
-                cache(maxCacheSize: 10240, defaultBranch: 'main', caches: [
-                    arbitraryFileCache(
-                        path: "${DD_PATH}",
-                        cacheValidityDecidingFile: "${PROJECT_PATH}/project.pbxproj"
-                    )
-                ]) {
-                    echo "--- Check the cache has restored ---"
-                    sh "ls -lh ${DD_PATH} || echo 'Folder is Empty'"
+                script {
+                    echo "🔍 Checking cache status BEFORE build..."
+                    sh """
+                        echo "=== Pre-Build Cache Check ==="
+                        if [ -d "${DD_PATH}" ]; then
+                            echo "✅ DerivedData exists (cache restored or previous build)"
+                            echo "Size: \$(du -sh ${DD_PATH} | cut -f1)"
+                            echo "Files: \$(find ${DD_PATH} -type f | wc -l) files"
+                            echo "Modified: \$(stat -f "%Sm" ${DD_PATH} 2>/dev/null || stat -c "%y" ${DD_PATH})"
+                        else
+                            echo "❌ No DerivedData (will build from scratch)"
+                        fi
+                        echo "================================"
+                    """
                     
-                    echo "Compiling application..."
-                    sh 'bundle exec fastlane compile_for_testing'
+                    def startTime = System.currentTimeMillis()
+                    
+                    cache(
+                        maxCacheSize: 10240, 
+                        defaultBranch: params.BRANCH_NAME,
+                        caches: [
+                            arbitraryFileCache(
+                                path: "${DD_PATH}",
+                                cacheValidityDecidingFile: "${PROJECT_PATH}/project.pbxproj",
+                                compressionMethod: 'TARGZ'
+                            )
+                        ]
+                    ) {
+                        echo "🔨 Running compile_for_testing..."
+                        sh 'bundle exec fastlane compile_for_testing'
+                    }
+                    
+                    def duration = (System.currentTimeMillis() - startTime) / 1000
+                    echo "⏱️ Total build time: ${duration} seconds"
+                    
+                    echo "🔍 Checking cache status AFTER build..."
+                    sh """
+                        echo "=== Post-Build Cache Check ==="
+                        if [ -d "${DD_PATH}" ]; then
+                            echo "✅ DerivedData exists"
+                            echo "Size: \$(du -sh ${DD_PATH} | cut -f1)"
+                            echo "Files: \$(find ${DD_PATH} -type f | wc -l) files"
+                        else
+                            echo "❌ No DerivedData (build failed?)"
+                        fi
+                        echo "================================"
+                    """
                 }
             }
         }
+
+        // stage('Build for Testing') {
+        //     steps {
+        //         echo "Compiling application and test targets with caching..."
+                
+        //         cache(maxCacheSize: 10240, defaultBranch: 'main', caches: [
+        //             arbitraryFileCache(
+        //                 path: "${DD_PATH}",
+        //                 cacheValidityDecidingFile: "${PROJECT_PATH}/project.pbxproj"
+        //             )
+        //         ]) {
+        //             echo "--- Check the cache has restored ---"
+        //             sh "ls -lh ${DD_PATH} || echo 'Folder is Empty'"
+                    
+        //             echo "Compiling application..."
+        //             sh 'bundle exec fastlane compile_for_testing'
+        //         }
+        //     }
+        // }
 
         stage('Testing') {
             parallel {
