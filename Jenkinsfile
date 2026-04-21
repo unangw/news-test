@@ -27,13 +27,11 @@ pipeline {
             description: 'Nama branch untuk cache'
         )
         
-        parameters {
-            choice(
-                name: 'BUILD_STRATEGY', 
-                choices: ['NATIVE_PERSISTENT', 'JOB_CACHER', 'FRESH_BUILD'], 
-                description: 'Choose a strategy for DerivedData'
-            )
-        }
+        choice(
+            name: 'BUILD_STRATEGY', 
+            choices: ['NATIVE_PERSISTENT', 'JOB_CACHER', 'FRESH_BUILD'], 
+            description: 'Choose a strategy for DerivedData'
+        )
 
         string (
             name: 'VERSION_NAME',
