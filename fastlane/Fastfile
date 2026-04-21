@@ -3,7 +3,7 @@
 default_platform(:ios)
 
 def resolved_xctestrun
-  dd = ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data"))
+  dd = File.expand_path(ENV.fetch("DD_PATH", "build/derived_data"))
   pattern = File.join(dd, "Build", "Products", "**", "*.xctestrun")
   path = Dir.glob(pattern).first
   UI.user_error!("Could not find .xctestrun under #{dd}") unless path
