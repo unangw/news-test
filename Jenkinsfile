@@ -67,6 +67,7 @@ pipeline {
                     } 
                     
                     else if (params.BUILD_STRATEGY == 'JOB_CACHER') {
+                        sh "rm -rf ${DD_PATH}"
                         cache(maxCacheSize: 10240, defaultBranch: params.BRANCH_NAME, caches: [
                             arbitraryFileCache(
                                 path: "${DD_PATH}",
