@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		220F4DA32F552DC300670C8D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 220F4DA22F552DC300670C8D /* Alamofire */; };
 		220F4DA52F552DCB00670C8D /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 220F4DA42F552DCB00670C8D /* Kingfisher */; };
-		220F4DA72F552DD200670C8D /* CHTCollectionViewWaterfallLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 220F4DA62F552DD200670C8D /* CHTCollectionViewWaterfallLayout */; };
 		220F4DA92F552DD600670C8D /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = 220F4DA82F552DD600670C8D /* SkeletonView */; };
 		220F4DAB2F552DE800670C8D /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 220F4DAA2F552DE800670C8D /* SwiftMessages */; };
 		220F4F3D2F556B8A00670C8D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 220F4F3C2F556B8A00670C8D /* RxSwift */; };
@@ -82,7 +81,6 @@
 				220F4F3F2F556C0000670C8D /* RxRelay in Frameworks */,
 				220F4DA52F552DCB00670C8D /* Kingfisher in Frameworks */,
 				220F4DA32F552DC300670C8D /* Alamofire in Frameworks */,
-				220F4DA72F552DD200670C8D /* CHTCollectionViewWaterfallLayout in Frameworks */,
 				220F4F412F556C0900670C8D /* RxCocoa in Frameworks */,
 				220F4DAB2F552DE800670C8D /* SwiftMessages in Frameworks */,
 			);
@@ -157,7 +155,6 @@
 			packageProductDependencies = (
 				220F4DA22F552DC300670C8D /* Alamofire */,
 				220F4DA42F552DCB00670C8D /* Kingfisher */,
-				220F4DA62F552DD200670C8D /* CHTCollectionViewWaterfallLayout */,
 				220F4DA82F552DD600670C8D /* SkeletonView */,
 				220F4DAA2F552DE800670C8D /* SwiftMessages */,
 				220F4F3C2F556B8A00670C8D /* RxSwift */,
@@ -247,7 +244,6 @@
 			mainGroup = 220F4CB92F551F1F00670C8D;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				220F4CF62F551F5100670C8D /* XCRemoteSwiftPackageReference "CHTCollectionViewWaterfallLayout" */,
 				220F4CF72F551F5D00670C8D /* XCRemoteSwiftPackageReference "SkeletonView" */,
 				220F4CF82F551F6700670C8D /* XCRemoteSwiftPackageReference "SwiftMessages" */,
 				220F4CF92F551F7600670C8D /* XCRemoteSwiftPackageReference "Kingfisher" */,
@@ -668,14 +664,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		220F4CF62F551F5100670C8D /* XCRemoteSwiftPackageReference "CHTCollectionViewWaterfallLayout" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/chiahsien/CHTCollectionViewWaterfallLayout";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.10;
-			};
-		};
 		220F4CF72F551F5D00670C8D /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Juanpe/SkeletonView";
@@ -728,11 +716,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 220F4CF92F551F7600670C8D /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
-		};
-		220F4DA62F552DD200670C8D /* CHTCollectionViewWaterfallLayout */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 220F4CF62F551F5100670C8D /* XCRemoteSwiftPackageReference "CHTCollectionViewWaterfallLayout" */;
-			productName = CHTCollectionViewWaterfallLayout;
 		};
 		220F4DA82F552DD600670C8D /* SkeletonView */ = {
 			isa = XCSwiftPackageProductDependency;
