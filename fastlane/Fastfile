@@ -2,139 +2,111 @@
 
 default_platform(:ios)
 
-def resolved_xctestrun
-  dd = ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data"))
-  pattern = File.join(dd, "Build", "Products", "**", "*.xctestrun")
-  path = Dir.glob(pattern).first
-  UI.user_error!("Could not find .xctestrun under #{dd}") unless path
+# --- CENTRALIZED CONFIGURATION ---
+SHARED_CONFIG = {
+  project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
+  scheme: ENV.fetch("SCHEME", "News"),
+  derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+  destination: ENV.fetch("DESTINATION", "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest")
+}.freeze
 
-  UI.message("Using xctestrun: #{path}")
+SHARED_PATHS = {
+  build_dir: File.join(Dir.pwd, "build"),
+  source_packages: ENV.fetch("CLONED_SOURCE_PACKAGES_DIR", File.join(Dir.pwd, "build", "SourcePackages")),
+  lint_report: File.join(Dir.pwd, "swiftlint-report.html")
+}.freeze
+
+# --- HELPER METHODS ---
+def resolved_xctestrun
+  pattern = File.join(SHARED_CONFIG[:derived_data_path], "Build", "Products", "**", "*.xctestrun")
+  path = Dir.glob(pattern).first
+  UI.user_error!("Could not find .xctestrun under #{SHARED_CONFIG[:derived_data_path]}") unless path
   path
 end
 
-def shared_xcargs
-  source_packages_path = ENV.fetch("CLONED_SOURCE_PACKAGES_DIR", File.join(Dir.pwd, "build", "SourcePackages"))
-  "-clonedSourcePackagesDirPath '#{source_packages_path}'"
-end
-
-def simulator_destination
-  ENV.fetch("DESTINATION", "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest")
-end
-
-def test_plan_name
-  ENV.fetch("TEST_PLAN", "News")
+def get_result_bundle_path(build_num, type)
+  File.join(SHARED_PATHS[:build_dir], "#{type}-#{build_num}.xcresult")
 end
 
 def swiftlint_executable
+  # Keep existing search logic
   from_env = ENV["SWIFTLINT_EXECUTABLE"].to_s.strip
   return from_env if !from_env.empty? && File.executable?(from_env)
-
-  %w[
-    /opt/homebrew/bin/swiftlint
-    /usr/local/bin/swiftlint
-  ].each do |path|
-    return path if File.executable?(path)
-  end
-
-  ENV["PATH"].to_s.split(File::PATH_SEPARATOR).each do |dir|
+  %w[/opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint].each { |p| return p if File.executable?(p) }
+  ENV["PATH"].to_s.split(File::PATH_SEPARATOR).each { |dir| 
     candidate = File.join(dir, "swiftlint")
-    return candidate if File.executable?(candidate)
-  end
-
+    return candidate if File.executable?(candidate) 
+  }
   nil
 end
 
 platform :ios do
-  desc "run_tests with build_for_testing (same as scan; produces .xctestrun for later steps)"
   lane :compile_for_testing do
     run_tests(
-      project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
-      scheme: ENV.fetch("SCHEME", "News"),
-      destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+      project: SHARED_CONFIG[:project],
+      scheme: SHARED_CONFIG[:scheme],
+      destination: SHARED_CONFIG[:destination],
+      derived_data_path: SHARED_CONFIG[:derived_data_path],
       build_for_testing: true,
-      xcargs: shared_xcargs
+      xcargs: "-clonedSourcePackagesDirPath '#{SHARED_PATHS[:source_packages]}'"
     )
   end
 
-  desc "SwiftLint HTML report (non-failing; same spirit as Jenkins `|| true`)"
   lane :ci_lint do
     exe = swiftlint_executable
     if exe.nil?
-      UI.important("SwiftLint not found (set SWIFTLINT_EXECUTABLE or install swiftlint). Skipping lint; writing placeholder report.")
-      File.write(File.join(Dir.pwd, "swiftlint-report.html"), "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>SwiftLint</title></head><body><p>SwiftLint executable not found on this machine.</p></body></html>\n")
+      File.write(SHARED_PATHS[:lint_report], "<html><body><p>SwiftLint executable not found.</p></body></html>")
     else
-      UI.message("Using SwiftLint at: #{exe}")
-      swiftlint(
-        mode: :lint,
-        reporter: "html",
-        output_file: "swiftlint-report.html",
-        ignore_exit_status: true,
-        executable: exe
-      )
+      swiftlint(mode: :lint, reporter: "html", output_file: SHARED_PATHS[:lint_report], ignore_exit_status: true, executable: exe)
     end
   end
 
-  desc "Unit tests using existing .xctestrun"
   lane :ci_unit_tests do |options|
-    build_num = options[:JENKINS_VERSION_CODE] || "local"
-    unique_result_path = File.join(Dir.pwd, "build", "unit-test-#{build_num}.xcresult")
-
     run_tests(
-      project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
-      scheme: ENV.fetch("SCHEME", "News"),
+      project: SHARED_CONFIG[:project],
+      scheme: SHARED_CONFIG[:scheme],
       xctestrun: resolved_xctestrun,
-      destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+      destination: SHARED_CONFIG[:destination],
+      derived_data_path: SHARED_CONFIG[:derived_data_path],
       test_without_building: true,
       only_testing: ["NewsTests"],
-      result_bundle_path: unique_result_path
+      result_bundle_path: get_result_bundle_path(options[:JENKINS_VERSION_CODE] || "local", "unit-test")
     )
   end
 
-  desc "UI tests using existing .xctestrun (parallel testing disabled)"
   lane :ci_ui_tests do |options|
-    build_num = options[:JENKINS_VERSION_CODE] || "local"
-    unique_result_path = File.join(Dir.pwd, "build", "ui-test-#{build_num}.xcresult")
-
     run_tests(
-      project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
-      scheme: ENV.fetch("SCHEME", "News"),
+      project: SHARED_CONFIG[:project],
+      scheme: SHARED_CONFIG[:scheme],
       xctestrun: resolved_xctestrun,
-      destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+      destination: SHARED_CONFIG[:destination],
+      derived_data_path: SHARED_CONFIG[:derived_data_path],
       test_without_building: true,
       only_testing: ["NewsUITests"],
       parallel_testing: false,
-      result_bundle_path: unique_result_path
+      result_bundle_path: get_result_bundle_path(options[:JENKINS_VERSION_CODE] || "local", "ui-test")
     )
   end
 
-  desc "Run all targets defined in TestPlan.xctestplan (NewsTests + NewsUITests). Override plan with TEST_PLAN."
   lane :test_with_testplan do |options|
-    build_num = options[:JENKINS_VERSION_CODE] || "local"
-    unique_result_path = File.join(Dir.pwd, "build", "testplan-#{build_num}.xcresult")
-
     run_tests(
-      project: ENV.fetch("PROJECT_PATH", "News.xcodeproj"),
-      scheme: ENV.fetch("SCHEME", "News"),
+      project: SHARED_CONFIG[:project],
+      scheme: SHARED_CONFIG[:scheme],
       xctestrun: resolved_xctestrun,
-      destination: simulator_destination,
-      derived_data_path: ENV.fetch("DD_PATH", File.join(Dir.pwd, "build", "derived_data")),
+      destination: SHARED_CONFIG[:destination],
+      derived_data_path: SHARED_CONFIG[:derived_data_path],
       test_without_building: true,
-      testplan: test_plan_name,
+      testplan: ENV.fetch("TEST_PLAN", "News"),
       parallel_testing: false,
-      result_bundle_path: unique_result_path
+      result_bundle_path: get_result_bundle_path(options[:JENKINS_VERSION_CODE] || "local", "testplan")
     )
   end
 
-  desc "Configure gym / signing, then enable this lane for release IPA builds"
   lane :build_for_release do
-    UI.important("Placeholder: add build_ios_app (gym) and signing before using in CI.")
+    UI.important("Placeholder for: build_ios_app (gym) using project: #{SHARED_CONFIG[:project]}")
   end
 
-  desc "Configure firebase_app_distribution before using in CI"
   lane :release_to_firebase do
-    UI.important("Placeholder: add firebase_app_distribution when ready.")
+    UI.important("Placeholder for: firebase_app_distribution")
   end
 end
