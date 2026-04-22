@@ -71,7 +71,7 @@ pipeline {
                         sh "rm -rf ${DD_PATH}"
                         sh "rm -rf ${CLONED_SOURCE_PACKAGES_DIR}"
                         
-                        cache(maxCacheSize: 10240, defaultBranch: params.BRANCH_NAME, caches: [
+                        cache(maxCacheSize: 30240, defaultBranch: "master", caches: [
                             arbitraryFileCache(
                                 path: "${DD_PATH}",
                                 compressionMethod: 'TARGZ',
